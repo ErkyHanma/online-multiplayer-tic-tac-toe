@@ -23,10 +23,9 @@ const HomeForm = () => {
   const navigate = useNavigate();
 
   const handleSubmit = (value: z.infer<typeof homeFormSchema>) => {
-    console.log(mode);
-    console.log(value);
-
     if (mode.length === 0 || mode === null) return;
+
+    localStorage.setItem("name", value.name);
 
     if (mode === "Multiplayer") {
       navigate(`/game`);

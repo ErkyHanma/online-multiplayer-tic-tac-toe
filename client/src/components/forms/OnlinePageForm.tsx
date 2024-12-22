@@ -11,16 +11,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { OnlinePageFormSchema } from "@/lib/zod";
 import { Input } from "../ui/input";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { Button } from "../ui/button";
 import Divider from "../Divider";
-import { useState } from "react";
 import { useNavigate } from "react-router";
+import { socket } from "@/socket";
+import { getCode } from "@/lib/utils";
 
 const OnlinePageForm = () => {
-  const [option, setOption] = useState<string>("");
-
   const navigate = useNavigate();
+  const roomCode = getCode();
+  const name = localStorage.getItem("name");
 
   const form = useForm<z.infer<typeof OnlinePageFormSchema>>({
     resolver: zodResolver(OnlinePageFormSchema),
@@ -30,8 +30,7 @@ const OnlinePageForm = () => {
   });
 
   const handleSubmit = (values: z.infer<typeof OnlinePageFormSchema>) => {
-    console.log(values);
-    console.log(option);
+    socket.emit("join-room", { name: name, roomCode: values.room });
   };
 
   return (
@@ -62,34 +61,31 @@ const OnlinePageForm = () => {
           <Button className="w-full">Join Room</Button>
         </div>
 
-        <ToggleGroup className=" gap-2 flex-col flex w-full" type="single">
+        <div className="items-center gap-2 flex-col flex w-full">
           <Divider />
 
-          <ToggleGroupItem className=" bg-gray-950 w-full" value="Multiplayer">
-            <button
-              onClick={() => {
-                navigate("/game");
-                setOption("Create Room");
-              }}
-            >
-              Create Room
-            </button>
-          </ToggleGroupItem>
-          <Divider />
-          <ToggleGroupItem
-            className=" bg-gray-950  w-full"
-            value="Online Multiplayer"
+          <button
+            className=" bg-gray-950 w-full p-3 rounded-lg hover:bg-gray-900 border"
+            onClick={() => {
+              navigate(
+                `/roomgame?name=${encodeURIComponent(
+                  name ?? ""
+                )}&roomCode=${encodeURIComponent(roomCode)}`
+              );
+            }}
           >
-            <button
-              onClick={() => {
-                navigate("/game");
-                setOption("Join random player");
-              }}
-            >
-              Join random player
-            </button>
-          </ToggleGroupItem>
-        </ToggleGroup>
+            Create Room
+          </button>
+          <Divider />
+          <button
+            className=" bg-gray-950  w-full p-3 rounded-lg hover:bg-gray-900 border"
+            onClick={() => {
+              navigate("/game");
+            }}
+          >
+            Join random player
+          </button>
+        </div>
       </form>
     </Form>
   );

@@ -1,8 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap");
 
 :root {
   color-scheme: light dark;
@@ -10,6 +11,7 @@
   background-color: (224, 71.4%, 4.1%);
   font-optical-sizing: auto;
   font-weight: 400;
+  font-family: "Jost";
 }
 
 @layer base {
