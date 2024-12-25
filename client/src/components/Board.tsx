@@ -1,3 +1,4 @@
+import { O_PLAYER, winCombs, X_PLAYER } from "@/lib/constants";
 import Square from "./Square";
 import { useState } from "react";
 
@@ -6,19 +7,7 @@ const Board = () => {
   const [isPlayerTurn, setIsplayerTurn] = useState(true);
   const [winner, setWinner] = useState<string | undefined>("");
 
-  const X_PLAYER = "X";
-  const O_PLAYER = "O";
 
-  const winCombs = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
 
   const handleClick = (index: number) => {
     const newBoard = [...boardData];

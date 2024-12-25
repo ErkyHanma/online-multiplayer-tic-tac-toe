@@ -1,5 +1,4 @@
 import Board from "@/components/Board";
-import Chat from "@/components/Chat";
 import Icon from "@/components/Icon";
 
 const GamePage = () => {
@@ -16,7 +15,6 @@ const GamePage = () => {
 
         <div className="flex w-full justify-center ">
           <Board />
-          <Chat />
         </div>
       </div>
     </div>

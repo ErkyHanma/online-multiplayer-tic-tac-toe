@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function getCode() {
+export function GenerateRoomCode() {
   const values = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let roomCode = "";
 
@@ -15,3 +15,6 @@ export function getCode() {
 
   return roomCode;
 }
+
+
+// Board Utils: 

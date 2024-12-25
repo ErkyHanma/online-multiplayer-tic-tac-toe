@@ -1,5 +1,6 @@
 import Icon from "@/components/Icon";
 import { socket } from "@/socket";
+import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 
 const RoomLobby = () => {
@@ -11,11 +12,13 @@ const RoomLobby = () => {
     roomCode: searchParams.get("roomCode"),
   });
 
-  socket.on("hola", (value) => {
-    alert(`${value} has join`);
-    setTimeout(() => {
-      navigate(`/game/${searchParams.get("roomCode")}`);
-    }, 1000);
+  useEffect(() => {
+    socket.on("join", (value) => {
+      console.log(`${value.name} has join`);
+      setTimeout(() => {
+        navigate(`/onlineGame/${searchParams.get("roomCode")}`);
+      }, 1000);
+    });
   });
 
   return (

@@ -15,11 +15,11 @@ import { Button } from "../ui/button";
 import Divider from "../Divider";
 import { useNavigate } from "react-router";
 import { socket } from "@/socket";
-import { getCode } from "@/lib/utils";
+import { GenerateRoomCode } from "@/lib/utils";
+import { useEffect } from "react";
 
 const OnlinePageForm = () => {
   const navigate = useNavigate();
-  const roomCode = getCode();
   const name = localStorage.getItem("name");
 
   const form = useForm<z.infer<typeof OnlinePageFormSchema>>({
@@ -30,8 +30,25 @@ const OnlinePageForm = () => {
   });
 
   const handleSubmit = (values: z.infer<typeof OnlinePageFormSchema>) => {
+    // Event emitted  to the server sending name and roomCode
     socket.emit("join-room", { name: name, roomCode: values.room });
   };
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleJoin = ({ roomCode }: { roomCode: string }) => {
+      setTimeout(() => {
+        navigate(`/onlineGame/${roomCode}`);
+      }, 1000);
+    };
+
+    socket.on("join", handleJoin);
+
+    return () => {
+      socket.off("join", handleJoin);
+    };
+  }, [navigate]);
 
   return (
     <Form {...form}>
@@ -70,7 +87,7 @@ const OnlinePageForm = () => {
               navigate(
                 `/roomgame?name=${encodeURIComponent(
                   name ?? ""
-                )}&roomCode=${encodeURIComponent(roomCode)}`
+                )}&roomCode=${encodeURIComponent(GenerateRoomCode())}`
               );
             }}
           >
