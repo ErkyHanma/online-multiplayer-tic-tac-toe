@@ -1,22 +1,9 @@
-import Chat from "@/components/Chat";
 import Icon from "@/components/Icon";
 import OnlineBoard from "@/components/OnlineBoard";
 import { socket } from "@/socket";
+import { playersProps } from "@/types";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
-
-type playersProps = {
-  enemy: {
-    name: string;
-    id: string;
-    isX: boolean;
-  };
-  you: {
-    name: string;
-    id: string;
-    isX: boolean;
-  };
-};
 
 const OnlineGamePage = () => {
   const location = useLocation();
@@ -32,7 +19,6 @@ const OnlineGamePage = () => {
       setPlayersData(values);
     });
 
-    // Clean up the socket listener to avoid memory leaks
     return () => {
       socket.off("player-data");
     };
@@ -49,18 +35,7 @@ const OnlineGamePage = () => {
   return (
     <div className="h-screen  gap-12 w-full flex flex-col items-center justify-center">
       <Icon />
-      <div className="p-8 w-[1000px] items-center gap-6 bg-black min-h-[500px] rounded-lg flex flex-col ">
-        <div className="w-full flex flex-col gap-1">
-          <p>{`${playersData?.you.name} (You) vs ${playersData?.enemy.name}`}</p>
-          <div className="w-[100%] h-[4px] bg-gray-700"></div>
-        </div>
-
-        <div className="flex w-full justify-center ">
-          {/* Render OnlineBoard only when playersData is available */}
-          <OnlineBoard playerData={playersData.you} />
-          <Chat />
-        </div>
-      </div>
+      <OnlineBoard playersData={playersData} />
     </div>
   );
 };

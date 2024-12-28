@@ -20,7 +20,6 @@ const rooms = {};
 
 io.on("connection", (socket) => {
   console.log(`New connection: ${socket.id}`);
-  let currentPlayer = {};
 
   // Listen for "create-room" event
   socket.on("create-room", ({ name, roomCode }) => {
@@ -54,9 +53,6 @@ io.on("connection", (socket) => {
     socket.join(roomCode);
     io.to(roomCode).emit("join", { name: name, roomCode: roomCode });
     console.log(`${name} joined room ${roomCode}`);
-
-    currentPlayer = rooms[roomCode].players[Math.floor(Math.random() * 2)];
-    currentPlayer.isX = true;
   });
 
   // Handle "game-started" event
@@ -65,7 +61,15 @@ io.on("connection", (socket) => {
 
     const room = rooms[roomCode];
 
-    io.to(roomCode).emit("current-player", currentPlayer);
+    // If no currentPlayer is assigned, randomly select one
+    if (!room.currentPlayer) {
+      room.currentPlayer =
+        room.players[Math.floor(Math.random() * room.players.length)];
+      room.currentPlayer.isX = true; // Assign "X" to the selected player
+    }
+
+    // Emit the current player to the room
+    io.to(roomCode).emit("current-player", room.currentPlayer);
 
     // Sending player data to both players
     io.to(room.players[0].id).emit("player-data", {
@@ -84,17 +88,42 @@ io.on("connection", (socket) => {
 
     const room = rooms[roomCode];
 
-    currentPlayer = room.players.find((player) => player.id !== playerId);
-
+    const nextPlayer = room.players.find((player) => player.id !== playerId);
     room.board = board;
+    const winner = determineWinner(room.board);
 
-    socket.to(roomCode).emit("board-update", {
+    io.to(roomCode).emit("board-update", {
       newBoard: room.board,
-      nextPlayer: currentPlayer,
+      nextPlayer: nextPlayer,
+      winner: winner,
     });
   });
 });
 
+const winCombs = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
+];
+
+const determineWinner = (board) => {
+  for (let i = 0; i < winCombs.length; i++) {
+    const arr = winCombs[i];
+
+    if (
+      board[arr[0]] &&
+      board[arr[0]] === board[arr[1]] &&
+      board[arr[1]] === board[arr[2]]
+    ) {
+      return board[arr[0]];
+    }
+  }
+};
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
