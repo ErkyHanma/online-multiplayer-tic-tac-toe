@@ -15,7 +15,7 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
   const [winner, setWinner] = useState<string | null>(null);
   const location = useLocation();
 
-  console.log(playersData);
+  const roomCode = location.pathname.split("/")[2];
 
   useEffect(() => {
     const handleCurrentPlayer = ({
@@ -26,6 +26,10 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
       id: string;
     }) => {
       console.log(`El primer turno es para ${name}`);
+      console.log(playersData);
+      console.log(id);
+      console.log(playersData?.you.id);
+      console.log(id == playersData?.you.id);
       if (id == playersData?.you.id) {
         setIsYourTurn(true);
       }
@@ -69,15 +73,13 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
 
     socket.emit("player-move", {
       board: newBoard,
-      roomCode: location.pathname.split("/")[2],
+      roomCode: roomCode,
       playerId: playersData?.you.id,
     });
   };
 
-  console.log(isYourTurn);
-
   return (
-    <div className="p-8 w-[1000px]  items-center gap-6 bg-black min-h-[550px] rounded-lg flex flex-col ">
+    <div className="p-8  w-full lg:w-[1000px] items-center gap-6 bg-black  md:rounded-lg flex flex-col ">
       <div className="w-full flex flex-col gap-1">
         <div className="flex justify-between border-b-4 pb-2 border-b-gray-700">
           <p className="text-lg font-medium ">{` ${
@@ -96,8 +98,8 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
         </div>
       </div>
 
-      <div className="flex w-full justify-center ">
-        <div className="w-full flex-1 ">
+      <div className="flex flex-col gap-8  md:flex-row w-full justify-center ">
+        <div className="w-full">
           <div
             className={`grid-cols-3 grid ${!isYourTurn && "bg-disable"}   h-[350px]`}
           >
@@ -111,7 +113,7 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
             ))}
           </div>
         </div>
-        <Chat />
+        <Chat roomCode={roomCode} playerData={playersData.you} />
       </div>
 
       <div className="w-full flex flex-col gap-2">

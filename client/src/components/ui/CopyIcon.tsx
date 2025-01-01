@@ -1,11 +1,17 @@
+import { useToast } from "@/hooks/use-toast";
 import copy from "copy-to-clipboard";
 
 export type CopyProps = string | null | undefined;
 
 const CopyIcon = ({ text }: { text: CopyProps }) => {
+  const { toast } = useToast();
+
   const handleClick = () => {
     if (text) {
       copy(text);
+      toast({
+        title: "Text Copied!",
+      });
       //console.log(`${text} copied!`);
     } else {
       console.warn("No text to copy");

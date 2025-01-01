@@ -4,6 +4,7 @@ import GamePage from "./pages/GamePage";
 import Homepage from "./pages/HomePage";
 import RoomLobby from "./pages/RoomLobby";
 import OnlineGamePage from "./pages/OnlineGamePage";
+import { Toaster } from "./components/ui/toaster";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
         ></Route>
         <Route path="/roomgame" element={<RoomLobby />}></Route>
       </Routes>
+      <Toaster />
     </div>
   );
 };

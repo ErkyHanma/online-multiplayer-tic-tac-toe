@@ -26,8 +26,7 @@ const OnlineGamePage = () => {
 
   if (playersData) {
     return (
-      <div className="h-screen relative  gap-6 w-full flex flex-col items-center justify-center">
-        <PageLogo />
+      <div className="min-h-screen relative  gap-6 w-full flex flex-col items-center justify-center">
         <OnlineBoard playersData={playersData} />
       </div>
     );

@@ -82,6 +82,20 @@ const socketHandler = (io) => {
       });
     });
 
+    socket.on("chat-message", ({ message, roomCode, playerName, playerId }) => {
+      console.log(message);
+      console.log(roomCode);
+      console.log(playerName);
+      console.log(playerId);
+      socket
+        .to(roomCode)
+        .emit("chat-message-2", {
+          message: message,
+          playerName: playerName,
+          playerId: playerId,
+        });
+    });
+
     socket.on("user-room-exit", (value) => {
       console.log(value);
     });

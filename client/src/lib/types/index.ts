@@ -1,4 +1,4 @@
-type playerProps = {
+export type playerProps = {
   name: string;
   id: string;
   isX: boolean;
