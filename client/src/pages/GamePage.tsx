@@ -1,5 +1,5 @@
 import Board from "@/components/Board";
-import Icon from "@/components/Icon";
+import Icon from "@/components/PageLogo";
 
 const GamePage = () => {
   const name = localStorage.getItem("name");

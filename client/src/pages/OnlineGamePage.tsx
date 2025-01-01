@@ -1,7 +1,7 @@
-import Icon from "@/components/Icon";
+import PageLogo from "@/components/PageLogo";
 import OnlineBoard from "@/components/OnlineBoard";
 import { socket } from "@/socket";
-import { playersProps } from "@/types";
+import { playersProps } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 
@@ -24,18 +24,18 @@ const OnlineGamePage = () => {
     };
   }, [location.pathname]);
 
-  if (!playersData) {
+  if (playersData) {
     return (
-      <div className="h-screen text-5xl flex items-center justify-center">
-        Joining...
+      <div className="h-screen relative  gap-6 w-full flex flex-col items-center justify-center">
+        <PageLogo />
+        <OnlineBoard playersData={playersData} />
       </div>
     );
   }
 
   return (
-    <div className="h-screen  gap-12 w-full flex flex-col items-center justify-center">
-      <Icon />
-      <OnlineBoard playersData={playersData} />
+    <div className="h-screen text-5xl flex items-center justify-center">
+      Joining...
     </div>
   );
 };

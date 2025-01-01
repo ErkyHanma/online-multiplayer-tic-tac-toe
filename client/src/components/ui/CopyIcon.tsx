@@ -6,7 +6,7 @@ const CopyIcon = ({ text }: { text: CopyProps }) => {
   const handleClick = () => {
     if (text) {
       copy(text);
-      console.log(`${text} copied!`);
+      //console.log(`${text} copied!`);
     } else {
       console.warn("No text to copy");
     }

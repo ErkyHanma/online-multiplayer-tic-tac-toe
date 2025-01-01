@@ -14,9 +14,9 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import Divider from "../Divider";
 import { useNavigate } from "react-router";
-import { socket } from "@/socket";
 import { GenerateRoomCode } from "@/lib/utils";
 import { useEffect } from "react";
+import { socket } from "@/socket";
 
 const OnlinePageForm = () => {
   const navigate = useNavigate();

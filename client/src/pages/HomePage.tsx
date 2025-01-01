@@ -1,10 +1,10 @@
 import HomeForm from "../components/forms/HomeForm";
-import Icon from "../components/Icon";
+import PageLogo from "../components/PageLogo";
 
 const Homepage = () => {
   return (
     <div className="flex flex-col w-full h-screen justify-center items-center text-center gap-12">
-      <Icon />
+      <PageLogo />
       <HomeForm />
     </div>
   );

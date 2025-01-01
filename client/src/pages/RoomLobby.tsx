@@ -1,4 +1,4 @@
-import Icon from "@/components/Icon";
+import PageLogo from "@/components/PageLogo";
 import CopyIcon from "@/components/ui/CopyIcon";
 import { socket } from "@/socket";
 import { useEffect, useState } from "react";
@@ -31,7 +31,7 @@ const RoomLobby = () => {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center gap-14">
-      <Icon />
+      <PageLogo />
       <div className="flex mb-20 gap-4 flex-col items-center">
         <h1 className="text-3xl font-semibold">This is your Room Code</h1>
         <strong className="text-gray-400">{roomCode}</strong>

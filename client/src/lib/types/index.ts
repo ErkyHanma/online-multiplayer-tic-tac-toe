@@ -18,7 +18,7 @@ export type playersProps = {
 };
 
 export type OnlineBoardProps = {
-  playersData: playersProps;
+  playersData: playersProps ;
 };
 
 export type boardUpdated = {
