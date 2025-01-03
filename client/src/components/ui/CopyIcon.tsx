@@ -11,6 +11,7 @@ const CopyIcon = ({ text }: { text: CopyProps }) => {
       copy(text);
       toast({
         title: "Text Copied!",
+        variant: "rounded",
       });
       //console.log(`${text} copied!`);
     } else {

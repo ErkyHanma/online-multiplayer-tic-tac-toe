@@ -1,13 +1,20 @@
-import PageLogo from "@/components/PageLogo";
 import OnlineBoard from "@/components/OnlineBoard";
 import { socket } from "@/socket";
 import { playersProps } from "@/lib/types";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import { useSocket } from "@/context/useSocket";
 
 const OnlineGamePage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
   const [playersData, setPlayersData] = useState<playersProps | null>(null);
+  const { isConnected } = useSocket();
+
+  if (!isConnected) {
+    navigate("/online");
+  }
 
   useEffect(() => {
     socket.emit("game-started", {

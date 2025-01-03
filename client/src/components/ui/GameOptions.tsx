@@ -4,7 +4,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { socket } from "@/socket";
 import { useNavigate } from "react-router";
 
 const GameOptions = () => {
@@ -12,7 +11,6 @@ const GameOptions = () => {
 
   // Function to handle user room exit
   const handleClick = () => {
-    socket.emit("user-room-exit", socket.id);
     navigate("/online");
   };
 

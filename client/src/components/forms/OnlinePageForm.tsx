@@ -17,10 +17,12 @@ import { useNavigate } from "react-router";
 import { GenerateRoomCode } from "@/lib/utils";
 import { useEffect } from "react";
 import { socket } from "@/socket";
+import { useToast } from "@/hooks/use-toast";
 
 const OnlinePageForm = () => {
   const navigate = useNavigate();
   const name = localStorage.getItem("name");
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof OnlinePageFormSchema>>({
     resolver: zodResolver(OnlinePageFormSchema),
@@ -42,6 +44,14 @@ const OnlinePageForm = () => {
         navigate(`/onlineGame/${roomCode}`);
       }, 1000);
     };
+
+    socket.on("error", ({ message }) => {
+      toast({
+        title: "Error:",
+        description: message,
+        variant: "destructive"
+      });
+    });
 
     socket.on("join", handleJoin);
 

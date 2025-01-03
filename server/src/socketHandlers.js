@@ -49,8 +49,6 @@ const socketHandler = (io) => {
         room.currentPlayer.isX = true;
       }
 
-      console.log(room.currentPlayer, socket.id);
-
       io.to(roomCode).emit("current-player", room.currentPlayer);
 
       io.to(room.players[0].id).emit("player-data", {
@@ -82,26 +80,38 @@ const socketHandler = (io) => {
       });
     });
 
-    socket.on("chat-message", ({ message, roomCode, playerName, playerId }) => {
-      console.log(message);
-      console.log(roomCode);
-      console.log(playerName);
-      console.log(playerId);
-      socket
-        .to(roomCode)
-        .emit("chat-message-2", {
-          message: message,
-          playerName: playerName,
-          playerId: playerId,
-        });
+    socket.on("play-again-request", ({ playerData, roomCode }) => {
+      if (!rooms[roomCode]) return;
+
+      socket.to(roomCode).emit("play-again-request", playerData);
     });
 
-    socket.on("user-room-exit", (value) => {
-      console.log(value);
+    socket.on("play-again", (roomCode) => {
+      console.log(roomCode);
+      if (!rooms[roomCode]) return;
+
+      const room = rooms[roomCode];
+
+      room.currentPlayer.isX = false;
+
+      room.currentPlayer =
+        room.players[Math.floor(Math.random() * room.players.length)];
+      room.currentPlayer.isX = true;
+
+      io.to(roomCode).emit("play-again", room.currentPlayer);
+    });
+
+    socket.on("chat-message", ({ message, roomCode, playerName, playerId }) => {
+      socket.to(roomCode).emit("chat-message-2", {
+        message: message,
+        playerName: playerName,
+        playerId: playerId,
+      });
     });
 
     socket.on("disconnect", () => {
       console.log(`user ${socket.id} disconnect`);
+      delete socket.id;
     });
   });
 };

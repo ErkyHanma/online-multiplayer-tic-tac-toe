@@ -79,14 +79,14 @@ const Chat = ({ roomCode, playerData }: ChatProps) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className=" w-full flex-col border rounded-md relative flex justify-center"
+      className=" w-full md:max-w-[400px] flex-col border rounded-md relative flex justify-center"
     >
       <ScrollArea className="h-[300px] w-full rounded-xl ">
         <ScrollAreaViewport ref={viewportRef} className="h-full  p-4">
           {messages.map((item, idx) => (
             <div key={idx} className="flex  flex-col ">
               <div
-                className={`flex flex-col max-w-[300px]  mb-2 p-2 rounded-md ${
+                className={`flex flex-col max-w-[250px]  mb-2 p-2  rounded-md ${
                   item.playerId === playerData.id
                     ? "mr-auto bg-blue-400"
                     : "ml-auto text-end bg-gray-500"
