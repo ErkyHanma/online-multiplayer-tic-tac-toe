@@ -1,5 +1,5 @@
-export const X_PLAYER = "X";
-export const O_PLAYER = "O";
+export const X_PLAYER = "❌";
+export const O_PLAYER = "⚪";
 
 export const winCombs = [
   [0, 1, 2],

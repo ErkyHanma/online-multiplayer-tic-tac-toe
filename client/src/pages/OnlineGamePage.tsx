@@ -33,14 +33,14 @@ const OnlineGamePage = () => {
 
   if (playersData) {
     return (
-      <div className="min-h-screen relative  gap-6 w-full flex flex-col items-center justify-center">
+      <div className="relative flex min-h-screen w-full flex-col items-center justify-center gap-6">
         <OnlineBoard playersData={playersData} />
       </div>
     );
   }
 
   return (
-    <div className="h-screen text-5xl flex items-center justify-center">
+    <div className="flex h-screen items-center justify-center text-5xl">
       Joining...
     </div>
   );

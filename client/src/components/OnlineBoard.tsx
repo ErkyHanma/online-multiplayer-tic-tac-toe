@@ -10,6 +10,7 @@ import GameOptions from "./ui/GameOptions";
 import Counter from "./ui/Counter";
 import { useToast } from "@/hooks/use-toast";
 import PlayAgainBtn from "./PlayAgainBtn";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
   const [boardData, setBoardData] = useState<string[]>(Array(9).fill(""));
@@ -21,18 +22,7 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
   const roomCode = location.pathname.split("/")[2];
 
   useEffect(() => {
-    const handleCurrentPlayer = ({
-      name,
-      id,
-    }: {
-      name: string;
-      id: string;
-    }) => {
-      console.log(`El primer turno es para ${name}`);
-      // console.log(playersData);
-      // console.log(id);
-      // console.log(playersData?.you.id);
-      // console.log(id == playersData?.you.id);
+    const handleCurrentPlayer = ({ id }: { id: string }) => {
       if (id == playersData?.you.id) {
         setIsYourTurn(true);
       }
@@ -56,7 +46,6 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
     };
 
     const handlePlayAgainRequest = (player: playerProps) => {
-      console.log(player);
       toast({
         title: `${player.name} wants to play again?`,
         description: (
@@ -64,7 +53,7 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
             onClick={() => {
               socket.emit("play-again", roomCode);
             }}
-            className=" bg-gray-900 font-semibold p-1 px-3 rounded-lg hover:bg-gray-800 border"
+            className="rounded-lg border bg-gray-900 p-1 px-3 font-semibold hover:bg-gray-800"
           >
             Accept
           </button>
@@ -114,18 +103,19 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
   };
 
   return (
-    <div className="p-8  min-h-s' w-full lg:w-[1000px] items-center gap-6 bg-black  md:rounded-lg flex flex-col ">
-      <div className="w-full  flex flex-col gap-1">
-        <div className="flex justify-between items-end border-b-4 pb-2 border-b-gray-700">
-          <p className="text-lg font-medium ">{` ${
-            winner
-              ? `Player ${winner} wins`
+    <div className="flex w-full flex-col items-center gap-6 border-gray-900 bg-inherit p-8 dark:border-gray-700 md:rounded-lg md:border-2 lg:w-[1000px]">
+      <div className="flex w-full flex-col gap-1">
+        <div className="flex items-end justify-between border-b-2 border-gray-900 dark:border-gray-700 pb-2">
+          <p className="text-lg font-medium">
+            {winner
+              ? winner === (playersData?.you.isX ? X_PLAYER : O_PLAYER)
+                ? "You Win"
+                : "You Lose"
               : isYourTurn
-                ? "Your turn"
-                : ` Player ${
-                    playersData?.enemy.isX ? X_PLAYER : O_PLAYER
-                  } is picking`
-          }`}</p>
+                ? `Your turn (${playersData?.you.isX ? X_PLAYER : O_PLAYER})`
+                : `Player (${playersData?.enemy.isX ? X_PLAYER : O_PLAYER}) is picking`}
+          </p>
+
           {!winner ? (
             <Counter isYourTurn={isYourTurn} setIsYourTurn={setIsYourTurn} />
           ) : (
@@ -134,10 +124,10 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-8  md:flex-row w-full justify-center ">
+      <div className="flex w-full flex-col justify-center gap-8 md:flex-row">
         <div className="w-full">
           <div
-            className={`grid-cols-3 grid ${!isYourTurn && "bg-disable"}   h-[350px]`}
+            className={`grid grid-cols-3 ${!isYourTurn && "bg-gray-300 dark:bg-gray-900"} h-[350px]`}
           >
             {boardData.map((item, idx) => (
               <Square
@@ -152,13 +142,16 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
         <Chat roomCode={roomCode} playerData={playersData.you} />
       </div>
 
-      <div className="w-full flex flex-col gap-2">
-        <div className="flex justify-between border-t-4 pt-2 border-gray-700">
-          <p>
+      <div className="mt-2 flex w-full flex-col gap-2">
+        <div className="flex justify-between border-t-2 border-gray-900 pt-2 dark:border-gray-700">
+          <p className="font-semibold">
             <span>{` ${playersData?.you.name} (You)`} </span> vs
             <span>{` ${playersData?.enemy.name}`}</span>
           </p>
-          <GameOptions />
+          <div className="flex items-center justify-center gap-2">
+            <ThemeSwitcher />
+            <GameOptions />
+          </div>
         </div>
       </div>
     </div>

@@ -4,11 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: (224, 71.4%, 4.1%);
   font-optical-sizing: auto;
   font-weight: 400;
   font-family: "Jost";
@@ -43,8 +39,6 @@
     --radius: 0.5rem;
   }
   .dark {
-    --background: 224 71.4% 4.1%;
-    --foreground: 210 20% 98%;
     --card: 224 71.4% 4.1%;
     --card-foreground: 210 20% 98%;
     --popover: 224 71.4% 4.1%;
@@ -74,13 +68,6 @@
   * {
     @apply border-border;
   }
-  body {
-    @apply dark ;
-  }
 }
 
 
-
-.bg-disable {
-background-color: rgba(255, 255, 255, 0.38);
-}

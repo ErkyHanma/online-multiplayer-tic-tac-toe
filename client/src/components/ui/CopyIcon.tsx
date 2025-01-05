@@ -20,13 +20,14 @@ const CopyIcon = ({ text }: { text: CopyProps }) => {
   };
 
   return (
-    <button className="hover:scale-110 duration-100" onClick={handleClick}>
+    <button className="duration-100 hover:scale-110" onClick={handleClick}>
       <svg
+        className="dark:text-white"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         width="24"
         height="24"
-        color="#ffffff"
+        color="black"
         fill="none"
       >
         <path

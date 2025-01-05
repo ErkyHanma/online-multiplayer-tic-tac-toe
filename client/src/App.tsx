@@ -8,7 +8,7 @@ import { Toaster } from "./components/ui/toaster";
 
 const App = () => {
   return (
-    <div>
+    <div className="dark:bg-[#040419] dark:text-white">
       <Routes>
         <Route path="/" element={<Homepage />}></Route>
         <Route path="/online" element={<OnlinePage />}></Route>

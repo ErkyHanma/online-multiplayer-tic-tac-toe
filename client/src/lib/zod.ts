@@ -4,10 +4,10 @@ export const homeFormSchema = z.object({
   name: z
     .string()
     .min(2, {
-      message: "name must be at least 2 characters.",
+      message: "Name must be at least 2 characters.",
     })
     .max(30, {
-      message: "name is too long",
+      message: "Name is too long",
     }),
 });
 

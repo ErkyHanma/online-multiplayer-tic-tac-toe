@@ -45,39 +45,38 @@ const HomeForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="flex flex-col w-[300px] gap-6"
+        className="flex w-[350px] flex-col gap-6"
       >
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
-            <FormItem className="flex items-start flex-col ">
+            <FormItem className="flex flex-col items-start">
               <FormLabel className="ml-1">Name</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Juan"
-                  className=" focus:border-white border-0"
+                  className="border bg-inherit  dark:focus:border-white"
                   {...field}
                 />
               </FormControl>
-
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className="flex items-start w-full flex-col gap-3">
+        <div className="flex w-full flex-col items-start gap-3">
           <Label>Select Mode</Label>
-          <ToggleGroup className=" gap-2 flex-col flex w-full" type="single">
+          <ToggleGroup className="flex w-full flex-col gap-2" type="single">
             <ToggleGroupItem
-              className=" bg-gray-950 w-full"
+              className="w-full border bg-inherit"
               onClick={() => setMode("Multiplayer")}
               value="Multiplayer"
             >
               Multiplayer
             </ToggleGroupItem>
             <ToggleGroupItem
-              className=" bg-gray-950 w-full"
+              className="w-full border bg-inherit"
               onClick={() => setMode("Online Multiplayer")}
               value="Online Multiplayer"
             >

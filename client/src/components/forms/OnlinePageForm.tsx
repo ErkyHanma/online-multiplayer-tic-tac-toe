@@ -49,7 +49,7 @@ const OnlinePageForm = () => {
       toast({
         title: "Error:",
         description: message,
-        variant: "destructive"
+        variant: "destructive",
       });
     });
 
@@ -63,20 +63,20 @@ const OnlinePageForm = () => {
   return (
     <Form {...form}>
       <form
-        className="flex flex-col w-[300px] gap-6"
+        className="gap- flex w-[300px] flex-col gap-4"
         onSubmit={form.handleSubmit(handleSubmit)}
       >
-        <div className="gap-3 flex-col flex">
+        <div className="flex flex-col gap-3">
           <FormField
             control={form.control}
             name="room"
             render={({ field }) => (
-              <FormItem className="flex items-start flex-col ">
+              <FormItem className="flex flex-col items-start">
                 <FormLabel className="ml-1">Room Code</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="AXSEFDV"
-                    className=" focus:border-white border-0"
+                    className="border bg-inherit dark:focus:border-white"
                     {...field}
                   />
                 </FormControl>
@@ -88,29 +88,20 @@ const OnlinePageForm = () => {
           <Button className="w-full">Join Room</Button>
         </div>
 
-        <div className="items-center gap-2 flex-col flex w-full">
+        <div className="flex w-full flex-col items-center">
           <Divider />
 
           <button
-            className=" bg-gray-950 w-full p-3 rounded-lg hover:bg-gray-900 border"
+            className="w-full rounded-lg border bg-inherit p-3 hover:bg-accent"
             onClick={() => {
               navigate(
                 `/roomgame?name=${encodeURIComponent(
-                  name ?? ""
-                )}&roomCode=${encodeURIComponent(GenerateRoomCode())}`
+                  name ?? "",
+                )}&roomCode=${encodeURIComponent(GenerateRoomCode())}`,
               );
             }}
           >
             Create Room
-          </button>
-          <Divider />
-          <button
-            className=" bg-gray-950  w-full p-3 rounded-lg hover:bg-gray-900 border"
-            onClick={() => {
-              navigate("/game");
-            }}
-          >
-            Join random player
           </button>
         </div>
       </form>

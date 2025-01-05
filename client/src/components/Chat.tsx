@@ -20,7 +20,7 @@ const Chat = ({ roomCode, playerData }: ChatProps) => {
     }[]
   >([]);
 
-  const viewportRef = useRef<HTMLDivElement>(null); // Create a ref for the ScrollAreaViewport
+  const viewportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleEvent = ({
@@ -79,21 +79,20 @@ const Chat = ({ roomCode, playerData }: ChatProps) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className=" w-full md:max-w-[400px] flex-col border rounded-md relative flex justify-center"
+      className="relative flex w-full flex-col justify-center rounded-md border-2 border-gray-900 md:max-w-[400px]"
     >
-      <ScrollArea className="h-[300px] w-full rounded-xl ">
-        <ScrollAreaViewport ref={viewportRef} className="h-full  p-4">
+      <ScrollArea className="h-[300px] w-full rounded-xl">
+        <ScrollAreaViewport ref={viewportRef} className="h-full p-4">
           {messages.map((item, idx) => (
-            <div key={idx} className="flex  flex-col ">
+            <div key={idx} className="flex flex-col">
               <div
-                className={`flex flex-col max-w-[250px]  mb-2 p-2  rounded-md ${
+                className={`mb-2 flex max-w-[250px] flex-col rounded-md p-2 text-white ${
                   item.playerId === playerData.id
-                    ? "mr-auto bg-blue-400"
-                    : "ml-auto text-end bg-gray-500"
+                    ? "ml-auto bg-blue-400"
+                    : "mr-auto bg-gray-500 text-end"
                 }`}
               >
-                <p className="font-bold text-xs">{item.playerName}</p>
-                <p className=" break-words">{item.message}</p>
+                <p className="break-words">{item.message}</p>
               </div>
             </div>
           ))}
@@ -101,14 +100,17 @@ const Chat = ({ roomCode, playerData }: ChatProps) => {
         <ScrollBar orientation="vertical" />
       </ScrollArea>
 
-      <div className="p-2">
+      <div className="flex gap-2 p-2">
         <Input
-          placeholder="Message"
-          className="w-[95%]"
+          placeholder="Type your message..."
+          className="w-full border-2 border-gray-900 bg-inherit dark:focus-within:text-white"
           type="text"
           onChange={(e) => setMessage(e.target.value)}
           value={message}
         />
+        <button className="flex cursor-pointer items-center justify-center rounded-lg bg-zinc-700 p-2 opacity-90 hover:bg-zinc-600 focus:border-none">
+          <img src="/public/sent-stroke-rounded.svg" alt="" />
+        </button>
       </div>
     </form>
   );
