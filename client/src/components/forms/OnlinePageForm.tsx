@@ -32,8 +32,7 @@ const OnlinePageForm = () => {
   });
 
   const handleSubmit = (values: z.infer<typeof OnlinePageFormSchema>) => {
-    // Event emitted  to the server sending name and roomCode
-    socket.emit("join-room", { name: name, roomCode: values.room });
+    socket.emit("join-room-request", { name: name, roomCode: values.room });
   };
 
   useEffect(() => {
@@ -53,41 +52,39 @@ const OnlinePageForm = () => {
       });
     });
 
-    socket.on("join", handleJoin);
+    socket.on("join-room", handleJoin);
 
     return () => {
-      socket.off("join", handleJoin);
+      socket.off("join-room", handleJoin);
     };
   }, [navigate]);
 
   return (
     <Form {...form}>
-      <form
-        className="gap- flex w-[300px] flex-col gap-4"
-        onSubmit={form.handleSubmit(handleSubmit)}
-      >
-        <div className="flex flex-col gap-3">
-          <FormField
-            control={form.control}
-            name="room"
-            render={({ field }) => (
-              <FormItem className="flex flex-col items-start">
-                <FormLabel className="ml-1">Room Code</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="AXSEFDV"
-                    className="border bg-inherit dark:focus:border-white"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <div className="flex w-[300px] flex-col gap-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <div className="flex flex-col gap-3">
+            <FormField
+              control={form.control}
+              name="room"
+              render={({ field }) => (
+                <FormItem className="flex flex-col items-start">
+                  <FormLabel className="ml-1">Room Code</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="AXSEFDV"
+                      className="border bg-inherit dark:focus:border-white"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Button className="w-full">Join Room</Button>
-        </div>
-
+            <Button className="w-full">Join Room</Button>
+          </div>
+        </form>
         <div className="flex w-full flex-col items-center">
           <Divider />
 
@@ -104,7 +101,7 @@ const OnlinePageForm = () => {
             Create Room
           </button>
         </div>
-      </form>
+      </div>
     </Form>
   );
 };

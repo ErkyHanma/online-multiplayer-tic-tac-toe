@@ -1,10 +1,10 @@
 import OnlinePageForm from "@/components/forms/OnlinePageForm";
-import PageLogo from "@/components/PageLogo";
+import Logo from "@/components/Logo";
 
 const OnlinePage = () => {
   return (
-    <div className="flex gap-8 flex-col h-screen w-full items-center justify-center">
-      <PageLogo />
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-8">
+      <Logo />
       <OnlinePageForm />
     </div>
   );

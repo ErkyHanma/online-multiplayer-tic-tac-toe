@@ -2,12 +2,12 @@ import { X_PLAYER, O_PLAYER } from "@/constants";
 import Square from "./Square";
 import { useEffect, useState } from "react";
 import { socket } from "@/socket";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import Chat from "./Chat";
 import { boardUpdated, OnlineBoardProps, playerProps } from "@/lib/types";
 
-import GameOptions from "./ui/GameOptions";
-import Counter from "./ui/Counter";
+import GameOptions from "./GameOptions";
+import Counter from "./Counter";
 import { useToast } from "@/hooks/use-toast";
 import PlayAgainBtn from "./PlayAgainBtn";
 import ThemeSwitcher from "./ThemeSwitcher";
@@ -17,12 +17,13 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
   const [isYourTurn, setIsYourTurn] = useState(false);
   const [winner, setWinner] = useState<string | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   const roomCode = location.pathname.split("/")[2];
 
   useEffect(() => {
-    const handleCurrentPlayer = ({ id }: { id: string }) => {
+    const handleCurrentPlayerTurn = ({ id }: { id: string }) => {
       if (id == playersData?.you.id) {
         setIsYourTurn(true);
       }
@@ -72,18 +73,31 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
       }
     };
 
-    socket.on("current-player", handleCurrentPlayer);
+    const handlePlayerDiscconect = (value: playerProps) => {
+      toast({
+        title: `Player ${value.name} left the room`,
+        description: `Returning to the lobby ...`,
+      });
+
+      setTimeout(() => {
+        navigate("/online");
+      }, 5000);
+    };
+
+    socket.on("current-player-turn", handleCurrentPlayerTurn);
     socket.on("board-update", handleBoardUpdate);
     socket.on("play-again-request", handlePlayAgainRequest);
     socket.on("play-again", handlePlayAgain);
+    socket.on("player-disconnect", handlePlayerDiscconect);
 
     return () => {
-      socket.off("current-player", handleCurrentPlayer);
+      socket.off("current-player-turn", handleCurrentPlayerTurn);
       socket.off("board-update", handleBoardUpdate);
       socket.off("play-again-request", handlePlayAgainRequest);
       socket.off("play-again", handlePlayAgain);
+      socket.off("player-disconnect", handlePlayerDiscconect);
     };
-  }, [playersData]);
+  }, [playersData, roomCode, navigate, toast]);
 
   const handleClick = (index: number) => {
     const newBoard = [...boardData];
@@ -105,12 +119,14 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
   return (
     <div className="flex w-full flex-col items-center gap-6 border-gray-900 bg-inherit p-8 dark:border-gray-700 md:rounded-lg md:border-2 lg:w-[1000px]">
       <div className="flex w-full flex-col gap-1">
-        <div className="flex items-end justify-between border-b-2 border-gray-900 dark:border-gray-700 pb-2">
+        <div className="flex items-end justify-between border-b-2 border-gray-900 pb-2 dark:border-gray-700">
           <p className="text-lg font-medium">
             {winner
-              ? winner === (playersData?.you.isX ? X_PLAYER : O_PLAYER)
-                ? "You Win"
-                : "You Lose"
+              ? winner === "Draw"
+                ? "Draw"
+                : winner === (playersData?.you.isX ? X_PLAYER : O_PLAYER)
+                  ? "You Win"
+                  : "You Lose"
               : isYourTurn
                 ? `Your turn (${playersData?.you.isX ? X_PLAYER : O_PLAYER})`
                 : `Player (${playersData?.enemy.isX ? X_PLAYER : O_PLAYER}) is picking`}

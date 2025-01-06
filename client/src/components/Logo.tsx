@@ -1,4 +1,4 @@
-const PageLogo = () => {
+const Logo = () => {
   return (
     <div className="flex flex-col">
       <span className="text-3xl font-semibold">Online</span>
@@ -7,4 +7,4 @@ const PageLogo = () => {
   );
 };
 
-export default PageLogo;
+export default Logo;

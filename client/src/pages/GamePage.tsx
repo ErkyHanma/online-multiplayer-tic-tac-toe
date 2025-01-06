@@ -1,6 +1,6 @@
 import Square from "@/components/Square";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
-import GameOptions from "@/components/ui/GameOptions";
+import GameOptions from "@/components/GameOptions";
 import { O_PLAYER, winCombs, X_PLAYER } from "@/constants";
 import { useState } from "react";
 
@@ -60,7 +60,7 @@ const GamePage = () => {
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center gap-12">
-      <div className="flex h-screen w-full flex-col items-center gap-6 border-gray-900 dark:border-gray-700 bg-inherit p-8 md:rounded-lg lg:h-[550px] lg:w-[800px] lg:border-2">
+      <div className="flex h-screen w-full flex-col items-center gap-6 border-gray-900 bg-inherit p-8 dark:border-gray-700 md:rounded-lg lg:h-[550px] lg:w-[800px] lg:border-2">
         <div className="flex w-full items-end justify-center gap-1 border-b-2 border-gray-900 py-2 dark:border-gray-700">
           {winner ? (
             <p className="text-xl font-medium">{`${winner === X_PLAYER || winner === O_PLAYER ? `Player ${winner} wins` : winner}`}</p>
@@ -87,7 +87,7 @@ const GamePage = () => {
           </div>
         </div>
 
-        <div className="relative flex w-full items-center justify-between border-t-2 border-gray-900 dark:border-gray-700 py-4">
+        <div className="relative flex w-full items-center justify-between border-t-2 border-gray-900 py-4 dark:border-gray-700">
           <p className="font-semibold">{name}</p>
           {winner && (
             <button

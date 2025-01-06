@@ -1,4 +1,4 @@
-import PageLogo from "@/components/PageLogo";
+import Logo from "@/components/Logo";
 import CopyIcon from "@/components/ui/CopyIcon";
 import { socket } from "@/socket";
 import { useEffect, useState } from "react";
@@ -17,7 +17,7 @@ const RoomLobby = () => {
   useEffect(() => {
     setRoomCode(searchParams.get("roomCode"));
 
-    socket.on("join", (value) => {
+    socket.on("join-room", (value) => {
       console.log(`${value.name} has join`);
       setTimeout(() => {
         navigate(`/onlineGame/${searchParams.get("roomCode")}`);
@@ -25,20 +25,23 @@ const RoomLobby = () => {
     });
 
     return () => {
-      socket.off("join");
+      socket.off("join-room");
     };
   }, [searchParams]);
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center gap-14">
-      <PageLogo />
-      <div className="flex mb-20 gap-4 flex-col items-center">
+    <div className="flex h-screen flex-col items-center justify-center gap-14">
+      <Logo />
+      <div className="mb-20 flex flex-col items-center gap-4">
         <h1 className="text-3xl font-semibold">This is your Room Code</h1>
         <strong className="text-gray-400">{roomCode}</strong>
         <CopyIcon text={roomCode} />
       </div>
 
-      <p className="text-xl">Waiting for another player...</p>
+      <div className="flex items-end justify-end gap-2 text-xl">
+        <span> Waiting for another player</span>
+        <span className="loader pb-4"></span>
+      </div>
     </div>
   );
 };

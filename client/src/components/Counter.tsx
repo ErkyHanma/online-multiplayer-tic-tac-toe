@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 
-type counterProps = {
+type CounterProps = {
   isYourTurn: boolean;
-  setIsYourTurn: any;
+  setIsYourTurn: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Counter = ({ isYourTurn, setIsYourTurn }: counterProps) => {
+const Counter = ({ isYourTurn, setIsYourTurn }: CounterProps) => {
   const [count, setCount] = useState(10);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const Counter = ({ isYourTurn, setIsYourTurn }: counterProps) => {
 
     if (count === 0) {
       setCount(10);
-      setIsYourTurn((prev: boolean) => !prev);
+      setIsYourTurn((prev) => !prev);
     }
 
     return () => clearInterval(timer);

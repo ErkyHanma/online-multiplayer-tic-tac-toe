@@ -11,7 +11,6 @@ interface ThemeContextType {
   handleChangeTheme: () => void;
 }
 
-// Crear el contexto con un valor inicial vacío
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const useTheme = (): ThemeContextType => {
@@ -22,7 +21,6 @@ export const useTheme = (): ThemeContextType => {
   return context;
 };
 
-// Proveedor del tema
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState(
     () => localStorage.getItem("theme") || "dark",

@@ -1,4 +1,4 @@
-const winCombs = [
+const winningCombinations = [
   [0, 1, 2],
   [3, 4, 5],
   [6, 7, 8],
@@ -10,8 +10,8 @@ const winCombs = [
 ];
 
 function determineWinner(board) {
-  for (let i = 0; i < winCombs.length; i++) {
-    const arr = winCombs[i];
+  for (let i = 0; i < winningCombinations.length; i++) {
+    const arr = winningCombinations[i];
 
     if (
       board[arr[0]] &&

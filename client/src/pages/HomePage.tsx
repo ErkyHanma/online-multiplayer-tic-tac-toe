@@ -1,12 +1,12 @@
 import { useTheme } from "@/context/useTheme";
 import HomeForm from "../components/forms/HomeForm";
-import PageLogo from "../components/PageLogo";
+import Logo from "../components/Logo";
 
 const Homepage = () => {
   useTheme();
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center gap-12 text-center">
-      <PageLogo />
+      <Logo />
       <HomeForm />
     </div>
   );

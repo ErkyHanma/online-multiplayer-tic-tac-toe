@@ -16,7 +16,7 @@ const socketHandler = (io) => {
       console.log(`${name} created room ${roomCode}`);
     });
 
-    socket.on("join-room", ({ name, roomCode }) => {
+    socket.on("join-room-request", ({ name, roomCode }) => {
       if (!rooms[roomCode]) {
         socket.emit("error", { message: "Room does not exist" });
         return;
@@ -34,7 +34,7 @@ const socketHandler = (io) => {
       });
 
       socket.join(roomCode);
-      io.to(roomCode).emit("join", { name: name, roomCode: roomCode });
+      io.to(roomCode).emit("join-room", { name: name, roomCode: roomCode });
       console.log(`${name} joined room ${roomCode}`);
     });
 
@@ -43,13 +43,13 @@ const socketHandler = (io) => {
 
       const room = rooms[roomCode];
 
-      if (!room.currentPlayer) {
-        room.currentPlayer =
+      if (!room.currentTurnPlayer) {
+        room.currentTurnPlayer =
           room.players[Math.floor(Math.random() * room.players.length)];
-        room.currentPlayer.isX = true;
+        room.currentTurnPlayer.isX = true;
       }
 
-      io.to(roomCode).emit("current-player", room.currentPlayer);
+      io.to(roomCode).emit("current-player-turn", room.currentTurnPlayer);
 
       io.to(room.players[0].id).emit("player-data", {
         you: room.players[0],
@@ -87,31 +87,59 @@ const socketHandler = (io) => {
     });
 
     socket.on("play-again", (roomCode) => {
-      console.log(roomCode);
       if (!rooms[roomCode]) return;
 
       const room = rooms[roomCode];
-
-      room.currentPlayer.isX = false;
-
-      room.currentPlayer =
+      room.currentTurnPlayer.isX = false;
+      room.board = Array(9).fill("");
+      room.currentTurnPlayer =
         room.players[Math.floor(Math.random() * room.players.length)];
-      room.currentPlayer.isX = true;
+      room.currentTurnPlayer.isX = true;
 
-      io.to(roomCode).emit("play-again", room.currentPlayer);
+      io.to(roomCode).emit("play-again", room.currentTurnPlayer);
     });
 
     socket.on("chat-message", ({ message, roomCode, playerName, playerId }) => {
-      socket.to(roomCode).emit("chat-message-2", {
+      socket.to(roomCode).emit("chat-message-received", {
         message: message,
         playerName: playerName,
         playerId: playerId,
       });
     });
 
+    // handle when the user leaves the room
+    const handlePlayerLeave = (socket, playerId, roomCode) => {
+      const room = rooms[roomCode];
+      if (!room) return;
+
+      const player = room.players.find((player) => player.id === playerId);
+      if (!player) return;
+
+      console.log(`User ${player.name} left room ${roomCode}`);
+
+      // Delete the player from the room
+      room.players = room.players.filter((player) => player.id !== playerId);
+
+      delete rooms[roomCode];
+      socket.to(roomCode).emit("player-disconnect", player);
+    };
+
+    socket.on("leave-room", ({ playerId, roomCode }) => {
+      handlePlayerLeave(socket, playerId, roomCode);
+    });
+
     socket.on("disconnect", () => {
-      console.log(`user ${socket.id} disconnect`);
-      delete socket.id;
+      console.log(`User ${socket.id} disconnected`);
+
+      // Buscar todas las salas donde el usuario estaba conectado
+      for (const roomCode in rooms) {
+        const room = rooms[roomCode];
+        const player = room.players.find((player) => player.id === socket.id);
+
+        if (player) {
+          handlePlayerLeave(socket, socket.id, roomCode);
+        }
+      }
     });
   });
 };

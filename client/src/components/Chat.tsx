@@ -38,10 +38,10 @@ const Chat = ({ roomCode, playerData }: ChatProps) => {
       ]);
     };
 
-    socket.on("chat-message-2", handleEvent);
+    socket.on("chat-message-received", handleEvent);
 
     return () => {
-      socket.off("chat-message-2", handleEvent);
+      socket.off("chat-message-received", handleEvent);
     };
   }, []);
 
