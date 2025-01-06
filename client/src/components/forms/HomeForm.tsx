@@ -21,6 +21,7 @@ import {
 const HomeForm = () => {
   const [mode, setMode] = useState<string>("");
   const navigate = useNavigate();
+  const name = localStorage.getItem("name");
 
   const handleSubmit = (value: z.infer<typeof homeFormSchema>) => {
     if (mode.length === 0 || mode === null) return;
@@ -37,7 +38,7 @@ const HomeForm = () => {
   const form = useForm<z.infer<typeof homeFormSchema>>({
     resolver: zodResolver(homeFormSchema),
     defaultValues: {
-      name: "",
+      name: name ?? "",
     },
   });
 
@@ -56,7 +57,7 @@ const HomeForm = () => {
               <FormControl>
                 <Input
                   placeholder="Juan"
-                  className="border bg-inherit  dark:focus:border-white"
+                  className="border bg-inherit dark:focus:border-white"
                   {...field}
                 />
               </FormControl>

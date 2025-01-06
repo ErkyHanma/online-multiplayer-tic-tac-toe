@@ -7,8 +7,10 @@ const socketHandler = (io) => {
     console.log(`New connection: ${socket.id}`);
 
     socket.on("create-room", ({ name, roomCode }) => {
+      if (rooms[roomCode]) return;
+
       rooms[roomCode] = {
-        players: [{ name: name, id: socket.id, isX: false }],
+        players: [{ name: name, id: socket.id, isPlayerX: false }],
         board: Array(9).fill(""),
       };
 
@@ -30,10 +32,11 @@ const socketHandler = (io) => {
       rooms[roomCode].players.push({
         name: name,
         id: socket.id,
-        isX: false,
+        isPlayerX: false,
       });
 
       socket.join(roomCode);
+
       io.to(roomCode).emit("join-room", { name: name, roomCode: roomCode });
       console.log(`${name} joined room ${roomCode}`);
     });
@@ -43,12 +46,14 @@ const socketHandler = (io) => {
 
       const room = rooms[roomCode];
 
+      // Randomly choose the player's turn.
       if (!room.currentTurnPlayer) {
         room.currentTurnPlayer =
           room.players[Math.floor(Math.random() * room.players.length)];
-        room.currentTurnPlayer.isX = true;
+        room.currentTurnPlayer.isPlayerX = true;
       }
 
+      // Send to both player in the room the first player turn
       io.to(roomCode).emit("current-player-turn", room.currentTurnPlayer);
 
       io.to(room.players[0].id).emit("player-data", {
@@ -67,6 +72,7 @@ const socketHandler = (io) => {
 
       const room = rooms[roomCode];
 
+      // Update board
       room.board = board;
 
       const winner = determineWinner(room.board);
@@ -90,15 +96,20 @@ const socketHandler = (io) => {
       if (!rooms[roomCode]) return;
 
       const room = rooms[roomCode];
-      room.currentTurnPlayer.isX = false;
+
+      // Reset game data
+      room.currentTurnPlayer.isPlayerX = false;
       room.board = Array(9).fill("");
+
+      // Randomly choose the player's turn.
       room.currentTurnPlayer =
         room.players[Math.floor(Math.random() * room.players.length)];
-      room.currentTurnPlayer.isX = true;
+      room.currentTurnPlayer.isPlayerX = true;
 
       io.to(roomCode).emit("play-again", room.currentTurnPlayer);
     });
 
+    // Handle user messages
     socket.on("chat-message", ({ message, roomCode, playerName, playerId }) => {
       socket.to(roomCode).emit("chat-message-received", {
         message: message,
@@ -108,7 +119,7 @@ const socketHandler = (io) => {
     });
 
     // handle when the user leaves the room
-    const handlePlayerLeave = (socket, playerId, roomCode) => {
+    function handlePlayerLeave(socket, playerId, roomCode) {
       const room = rooms[roomCode];
       if (!room) return;
 
@@ -122,16 +133,17 @@ const socketHandler = (io) => {
 
       delete rooms[roomCode];
       socket.to(roomCode).emit("player-disconnect", player);
-    };
+    }
 
     socket.on("leave-room", ({ playerId, roomCode }) => {
       handlePlayerLeave(socket, playerId, roomCode);
     });
 
+    // handle when the user disconnect
     socket.on("disconnect", () => {
       console.log(`User ${socket.id} disconnected`);
 
-      // Buscar todas las salas donde el usuario estaba conectado
+      // Find the room where the user was.
       for (const roomCode in rooms) {
         const room = rooms[roomCode];
         const player = room.players.find((player) => player.id === socket.id);

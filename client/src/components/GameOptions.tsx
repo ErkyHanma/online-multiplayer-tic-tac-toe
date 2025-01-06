@@ -5,12 +5,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { socket } from "@/socket";
 import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
 
@@ -35,19 +29,10 @@ const GameOptions = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <img
-                className="duration-100 dark:text-white dark:invert"
-                src="\settings-icon.svg"
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-white"> Settings</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <img
+          className="duration-100 dark:text-white dark:invert"
+          src="\settings-icon.svg"
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="max-w-[280px]">
         <div className="flex flex-col p-2">

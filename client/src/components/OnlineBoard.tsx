@@ -5,7 +5,6 @@ import { socket } from "@/socket";
 import { useLocation, useNavigate } from "react-router";
 import Chat from "./Chat";
 import { boardUpdated, OnlineBoardProps, playerProps } from "@/lib/types";
-
 import GameOptions from "./GameOptions";
 import Counter from "./Counter";
 import { useToast } from "@/hooks/use-toast";
@@ -18,7 +17,7 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
   const [winner, setWinner] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { toast, dismiss } = useToast();
 
   const roomCode = location.pathname.split("/")[2];
 
@@ -53,6 +52,7 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
           <button
             onClick={() => {
               socket.emit("play-again", roomCode);
+              dismiss();
             }}
             className="rounded-lg border bg-gray-900 p-1 px-3 font-semibold hover:bg-gray-800"
           >
@@ -63,6 +63,7 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
     };
 
     const handlePlayAgain = (player: playerProps) => {
+      // Reset game
       setBoardData(Array(9).fill(""));
       setWinner(null);
 
@@ -97,14 +98,14 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
       socket.off("play-again", handlePlayAgain);
       socket.off("player-disconnect", handlePlayerDiscconect);
     };
-  }, [playersData, roomCode, navigate, toast]);
+  }, [playersData, roomCode, navigate, toast, dismiss]);
 
   const handleClick = (index: number) => {
     const newBoard = [...boardData];
 
     if (newBoard[index] !== "" || !isYourTurn || winner) return;
 
-    newBoard[index] = playersData?.you.isX ? X_PLAYER : O_PLAYER;
+    newBoard[index] = playersData?.you.isPlayerX ? X_PLAYER : O_PLAYER;
     setIsYourTurn((prev) => !prev);
 
     setBoardData(newBoard);
@@ -124,12 +125,12 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
             {winner
               ? winner === "Draw"
                 ? "Draw"
-                : winner === (playersData?.you.isX ? X_PLAYER : O_PLAYER)
+                : winner === (playersData?.you.isPlayerX ? X_PLAYER : O_PLAYER)
                   ? "You Win"
                   : "You Lose"
               : isYourTurn
-                ? `Your turn (${playersData?.you.isX ? X_PLAYER : O_PLAYER})`
-                : `Player (${playersData?.enemy.isX ? X_PLAYER : O_PLAYER}) is picking`}
+                ? `Your turn (${playersData?.you.isPlayerX ? X_PLAYER : O_PLAYER})`
+                : `Player (${playersData?.enemy.isPlayerX ? X_PLAYER : O_PLAYER}) is picking`}
           </p>
 
           {!winner ? (

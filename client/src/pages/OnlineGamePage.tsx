@@ -22,7 +22,7 @@ const OnlineGamePage = () => {
       playerId: socket.id,
     });
 
-    socket.on("player-data", (values) => {
+    socket.on("player-data", (values: playersProps) => {
       setPlayersData(values);
     });
 

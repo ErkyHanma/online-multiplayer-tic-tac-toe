@@ -51,8 +51,7 @@ const GamePage = () => {
     return null;
   }
 
-  console.log(winner);
-
+  // Reset game
   const handlePlayAgain = () => {
     setBoardData(Array(9).fill(""));
     setWinner("");

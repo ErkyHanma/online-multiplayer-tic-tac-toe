@@ -1,19 +1,22 @@
 export type playerProps = {
   name: string;
   id: string;
-  isX: boolean;
+  isPlayerX
+  : boolean;
 };
 
 export type playersProps = {
   enemy: {
     name: string;
     id: string;
-    isX: boolean;
+    isPlayerX
+    : boolean;
   };
   you: {
     name: string;
     id: string;
-    isX: boolean;
+    isPlayerX
+    : boolean;
   };
 };
 
