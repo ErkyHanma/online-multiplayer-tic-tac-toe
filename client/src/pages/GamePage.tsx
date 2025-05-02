@@ -1,14 +1,15 @@
 import Square from "@/components/Square";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import GameOptions from "@/components/GameOptions";
-import { O_PLAYER, winCombs, X_PLAYER } from "@/constants";
+import { O_PLAYER, playAudio, winCombs, X_PLAYER } from "@/constants";
 import { useState } from "react";
+import { playSound } from "@/lib/utils";
 
 const GamePage = () => {
   const name = localStorage.getItem("name");
 
   const [boardData, setBoardData] = useState<string[]>(Array(9).fill(""));
-  const [isPlayerTurn, setIsplayerTurn] = useState(true);
+  const [isXTurn, setIsXTurn] = useState(true);
   const [winner, setWinner] = useState<string | undefined | null>("");
 
   const handleClick = (index: number) => {
@@ -16,13 +17,15 @@ const GamePage = () => {
 
     if (winner) return;
 
+    playSound(playAudio);
+
     if (newBoard[index] === "") {
-      if (isPlayerTurn) {
+      if (isXTurn) {
         newBoard[index] = X_PLAYER;
-        setIsplayerTurn((prev) => !prev);
+        setIsXTurn((prev) => !prev);
       } else {
         newBoard[index] = O_PLAYER;
-        setIsplayerTurn((prev) => !prev);
+        setIsXTurn((prev) => !prev);
       }
 
       setBoardData(newBoard);
@@ -65,7 +68,7 @@ const GamePage = () => {
             <p className="text-xl font-medium">{`${winner === X_PLAYER || winner === O_PLAYER ? `Player ${winner} wins` : winner}`}</p>
           ) : (
             <p className="text-xl font-medium">
-              {isPlayerTurn ? X_PLAYER : O_PLAYER} Turn
+              {isXTurn ? X_PLAYER : O_PLAYER} Turn
             </p>
           )}
         </div>
@@ -73,7 +76,7 @@ const GamePage = () => {
         <div className="flex w-full justify-center md:w-[70%] lg:w-[60%]">
           <div className="w-full flex-1">
             <div
-              className={`grid h-[350px] grid-cols-3 ${winner && "bg-gray-300 dark:bg-gray-900"}`}
+              className={`grid h-[300px] sm:h-[350px] grid-cols-3 ${winner && "bg-gray-300 dark:bg-gray-900"}`}
             >
               {boardData.map((item, idx) => (
                 <Square

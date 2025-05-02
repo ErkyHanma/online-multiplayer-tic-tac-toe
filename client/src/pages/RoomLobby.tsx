@@ -1,4 +1,5 @@
 import Logo from "@/components/Logo";
+import ReturnHome from "@/components/ReturnHome";
 import CopyIcon from "@/components/ui/CopyIcon";
 import { socket } from "@/socket";
 import { useEffect, useState } from "react";
@@ -31,6 +32,7 @@ const RoomLobby = () => {
 
   return (
     <div className="flex h-screen flex-col items-center justify-center gap-14">
+      <ReturnHome route="/online" roomCode={roomCode} />
       <Logo />
       <div className="mb-20 flex flex-col items-center gap-4">
         <h1 className="text-3xl font-semibold">This is your Room Code</h1>

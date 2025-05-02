@@ -4,6 +4,8 @@ import { socket } from "@/socket";
 import { playerProps } from "@/lib/types";
 import { ScrollArea, ScrollAreaViewport } from "@radix-ui/react-scroll-area";
 import { ScrollBar } from "./ui/scroll-area";
+import { playSound } from "@/lib/utils";
+import { messageAudio } from "@/constants";
 
 type ChatProps = {
   roomCode: string;
@@ -36,6 +38,7 @@ const Chat = ({ roomCode, playerData }: ChatProps) => {
         ...prev,
         { message: message, playerName: playerName, playerId: playerId },
       ]);
+      playSound(messageAudio);
     };
 
     socket.on("chat-message-received", handleEvent);

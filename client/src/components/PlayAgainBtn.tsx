@@ -5,9 +5,11 @@ import { socket } from "@/socket";
 const PlayAgainBtn = ({
   roomCode,
   playersData,
+
 }: {
   roomCode: string;
   playersData: playersProps;
+
 }) => {
   const [isDisabled, setIsDisabled] = useState(false);
 

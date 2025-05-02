@@ -6,7 +6,7 @@ type CounterProps = {
 };
 
 const Counter = ({ isYourTurn, setIsYourTurn }: CounterProps) => {
-  const [count, setCount] = useState(10);
+  const [count, setCount] = useState(20);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -14,7 +14,7 @@ const Counter = ({ isYourTurn, setIsYourTurn }: CounterProps) => {
     }, 1000);
 
     if (count === 0) {
-      setCount(10);
+      setCount(20);
       setIsYourTurn((prev) => !prev);
     }
 
@@ -22,7 +22,7 @@ const Counter = ({ isYourTurn, setIsYourTurn }: CounterProps) => {
   }, [count, setIsYourTurn]);
 
   useEffect(() => {
-    setCount(10);
+    setCount(20);
   }, [isYourTurn]);
 
   return (

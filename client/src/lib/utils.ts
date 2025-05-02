@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { Howl } from "howler";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -16,4 +17,8 @@ export function GenerateRoomCode() {
   return roomCode;
 }
 
-
+export const playSound = (audio: string) => {
+  new Howl({
+    src: [audio],
+  }).play();
+};

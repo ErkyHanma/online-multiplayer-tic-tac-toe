@@ -22,9 +22,13 @@ const HomeForm = () => {
   const [mode, setMode] = useState<string>("");
   const navigate = useNavigate();
   const name = localStorage.getItem("name");
+  const [error, setError] = useState(false);
 
   const handleSubmit = (value: z.infer<typeof homeFormSchema>) => {
-    if (mode.length === 0 || mode === null) return;
+    if (mode.length === 0 || mode === null) {
+      setError(true);
+      return;
+    }
 
     localStorage.setItem("name", value.name);
 
@@ -46,7 +50,7 @@ const HomeForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="flex w-[350px] flex-col gap-6"
+        className="flex w-[300px] md:w-[350px] flex-col gap-6"
       >
         <FormField
           control={form.control}
@@ -88,6 +92,9 @@ const HomeForm = () => {
 
         <Button>Start</Button>
       </form>
+      {error && (
+        <div className="text-red-500">You must selected a game mode!</div>
+      )}
     </Form>
   );
 };

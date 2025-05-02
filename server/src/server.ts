@@ -3,7 +3,7 @@ import morgan from "morgan";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import cors from "cors";
-import socketHandler from "./socketHandlers.js";
+import { socketHandler } from "./socketHandlers.js";
 
 const app = express();
 app.use(cors());

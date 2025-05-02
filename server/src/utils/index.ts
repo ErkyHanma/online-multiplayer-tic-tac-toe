@@ -1,3 +1,5 @@
+import type { Board } from "./types";
+
 const winningCombinations = [
   [0, 1, 2],
   [3, 4, 5],
@@ -9,7 +11,7 @@ const winningCombinations = [
   [2, 4, 6],
 ];
 
-function determineWinner(board) {
+function determineWinner(board: Board) {
   for (let i = 0; i < winningCombinations.length; i++) {
     const arr = winningCombinations[i];
 

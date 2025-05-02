@@ -1,4 +1,4 @@
-import { X_PLAYER, O_PLAYER } from "@/constants";
+import { X_PLAYER, O_PLAYER, playAudio } from "@/constants";
 import Square from "./Square";
 import { useEffect, useState } from "react";
 import { socket } from "@/socket";
@@ -10,15 +10,15 @@ import Counter from "./Counter";
 import { useToast } from "@/hooks/use-toast";
 import PlayAgainBtn from "./PlayAgainBtn";
 import ThemeSwitcher from "./ThemeSwitcher";
+import { playSound } from "@/lib/utils";
 
 const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
-  const [boardData, setBoardData] = useState<string[]>(Array(9).fill(""));
+  const [boardData, setBoardData] = useState<string[]>(Array(9).fill(null));
   const [isYourTurn, setIsYourTurn] = useState(false);
   const [winner, setWinner] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { toast, dismiss } = useToast();
-
   const roomCode = location.pathname.split("/")[2];
 
   useEffect(() => {
@@ -64,7 +64,7 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
 
     const handlePlayAgain = (player: playerProps) => {
       // Reset game
-      setBoardData(Array(9).fill(""));
+      setBoardData(Array(9).fill(null));
       setWinner(null);
 
       if (player.id == playersData?.you.id) {
@@ -103,7 +103,8 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
   const handleClick = (index: number) => {
     const newBoard = [...boardData];
 
-    if (newBoard[index] !== "" || !isYourTurn || winner) return;
+    if (newBoard[index] !== null || !isYourTurn || winner) return;
+    playSound(playAudio);
 
     newBoard[index] = playersData?.you.isPlayerX ? X_PLAYER : O_PLAYER;
     setIsYourTurn((prev) => !prev);
@@ -144,7 +145,7 @@ const OnlineBoard = ({ playersData }: OnlineBoardProps) => {
       <div className="flex w-full flex-col justify-center gap-8 md:flex-row">
         <div className="w-full">
           <div
-            className={`grid grid-cols-3 ${!isYourTurn && "bg-gray-300 dark:bg-gray-900"} h-[350px]`}
+            className={`grid grid-cols-3 ${!isYourTurn && "bg-gray-300 dark:bg-gray-900"} h-[300px] sm:h-[350px]`}
           >
             {boardData.map((item, idx) => (
               <Square

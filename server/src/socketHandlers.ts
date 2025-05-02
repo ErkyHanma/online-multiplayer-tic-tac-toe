@@ -1,24 +1,28 @@
-import determineWinner from "./utils/index.js";
+import type { Socket, Server } from "socket.io";
+import determineWinner from "./utils/index.ts";
+import { SocketEvents, type Board, type Rooms } from "./utils/types.ts";
 
-const rooms = {};
+const rooms: Rooms = {};
 
-const socketHandler = (io) => {
+export const socketHandler = async (io: Server) => {
   io.on("connection", (socket) => {
     console.log(`New connection: ${socket.id}`);
 
-    socket.on("create-room", ({ name, roomCode }) => {
+    socket.on(SocketEvents.CREATE_ROOM, ({ name, roomCode }) => {
       if (rooms[roomCode]) return;
 
       rooms[roomCode] = {
-        players: [{ name: name, id: socket.id, isPlayerX: false }],
-        board: Array(9).fill(""),
+        players: [{ name: name, id: socket.id, isPlayerX: true }],
+        board: Array(9).fill(null) as Board,
       };
 
       socket.join(roomCode);
+
       console.log(`${name} created room ${roomCode}`);
+      console.log(rooms);
     });
 
-    socket.on("join-room-request", ({ name, roomCode }) => {
+    socket.on(SocketEvents.JOIN_ROOM_REQUEST, ({ name, roomCode }) => {
       if (!rooms[roomCode]) {
         socket.emit("error", { message: "Room does not exist" });
         return;
@@ -37,37 +41,41 @@ const socketHandler = (io) => {
 
       socket.join(roomCode);
 
-      io.to(roomCode).emit("join-room", { name: name, roomCode: roomCode });
+      io.to(roomCode).emit(SocketEvents.JOIN_ROOM, {
+        name: name,
+        roomCode: roomCode,
+      });
       console.log(`${name} joined room ${roomCode}`);
     });
 
-    socket.on("game-started", ({ roomCode }) => {
+    // Refactor
+    socket.on(SocketEvents.GAME_STARTED, ({ roomCode }) => {
       if (!rooms[roomCode]) return;
 
       const room = rooms[roomCode];
 
-      // Randomly choose the player's turn.
-      if (!room.currentTurnPlayer) {
-        room.currentTurnPlayer =
-          room.players[Math.floor(Math.random() * room.players.length)];
-        room.currentTurnPlayer.isPlayerX = true;
-      }
+      room.currentTurnPlayer = room.players.find(
+        (player) => player.isPlayerX === true
+      );
 
       // Send to both player in the room the first player turn
-      io.to(roomCode).emit("current-player-turn", room.currentTurnPlayer);
+      io.to(roomCode).emit(
+        SocketEvents.CURRENT_PLAYER_TURN,
+        room.currentTurnPlayer
+      );
 
-      io.to(room.players[0].id).emit("player-data", {
+      io.to(room.players[0].id).emit(SocketEvents.PLAYER_DATA, {
         you: room.players[0],
         enemy: room.players[1],
       });
 
-      io.to(room.players[1].id).emit("player-data", {
+      io.to(room.players[1].id).emit(SocketEvents.PLAYER_DATA, {
         you: room.players[1],
         enemy: room.players[0],
       });
     });
 
-    socket.on("player-move", ({ board, roomCode, playerId }) => {
+    socket.on(SocketEvents.PLAYER_MOVE, ({ board, roomCode, playerId }) => {
       if (!rooms[roomCode]) return;
 
       const room = rooms[roomCode];
@@ -79,68 +87,84 @@ const socketHandler = (io) => {
 
       const nextPlayer = room.players.find((player) => player.id !== playerId);
 
-      io.to(roomCode).emit("board-update", {
+      io.to(roomCode).emit(SocketEvents.BOARD_UPDATE, {
         newBoard: room.board,
         nextPlayer: nextPlayer,
         winner: winner,
       });
     });
 
-    socket.on("play-again-request", ({ playerData, roomCode }) => {
+    socket.on(SocketEvents.PLAY_AGAIN_REQUEST, ({ playerData, roomCode }) => {
       if (!rooms[roomCode]) return;
 
-      socket.to(roomCode).emit("play-again-request", playerData);
+      socket.to(roomCode).emit(SocketEvents.PLAY_AGAIN_REQUEST, playerData);
     });
 
-    socket.on("play-again", (roomCode) => {
+    socket.on(SocketEvents.PLAY_AGAIN, (roomCode) => {
       if (!rooms[roomCode]) return;
 
       const room = rooms[roomCode];
 
       // Reset game data
-      room.currentTurnPlayer.isPlayerX = false;
-      room.board = Array(9).fill("");
+      if (room.currentTurnPlayer) {
+        room.currentTurnPlayer.isPlayerX = false;
+      }
+
+      room.board = Array(9).fill(null) as Board;
 
       // Randomly choose the player's turn.
       room.currentTurnPlayer =
         room.players[Math.floor(Math.random() * room.players.length)];
       room.currentTurnPlayer.isPlayerX = true;
 
-      io.to(roomCode).emit("play-again", room.currentTurnPlayer);
+      io.to(roomCode).emit(SocketEvents.PLAY_AGAIN, room.currentTurnPlayer);
     });
 
     // Handle user messages
-    socket.on("chat-message", ({ message, roomCode, playerName, playerId }) => {
-      socket.to(roomCode).emit("chat-message-received", {
-        message: message,
-        playerName: playerName,
-        playerId: playerId,
-      });
-    });
+    socket.on(
+      SocketEvents.CHAT_MESSAGE,
+      ({ message, roomCode, playerName, playerId }) => {
+        socket.to(roomCode).emit(SocketEvents.CHAT_MESSAGE_RECEIVED, {
+          message: message,
+          playerName: playerName,
+          playerId: playerId,
+        });
+      }
+    );
 
     // handle when the user leaves the room
-    function handlePlayerLeave(socket, playerId, roomCode) {
+    async function handlePlayerLeave(
+      socket: Socket,
+      playerId: string,
+      roomCode: string
+    ) {
       const room = rooms[roomCode];
       if (!room) return;
 
       const player = room.players.find((player) => player.id === playerId);
       if (!player) return;
 
-      console.log(`User ${player.name} left room ${roomCode}`);
+      // Leave the player for the room
+      await socket.leave(roomCode);
 
-      // Delete the player from the room
+      // Delete the player from the room object
       room.players = room.players.filter((player) => player.id !== playerId);
 
       delete rooms[roomCode];
-      socket.to(roomCode).emit("player-disconnect", player);
+
+      if (room.players.length > 0) {
+        socket.to(roomCode).emit(SocketEvents.PLAYER_DISCONNECT, player);
+      }
+
+      console.log(`User ${player.name} left room ${roomCode}`);
     }
 
-    socket.on("leave-room", ({ playerId, roomCode }) => {
+    socket.on(SocketEvents.LEAVE_ROOM, ({ playerId, roomCode }) => {
       handlePlayerLeave(socket, playerId, roomCode);
     });
 
     // handle when the user disconnect
-    socket.on("disconnect", () => {
+    socket.on(SocketEvents.DISCONNECT, () => {
       console.log(`User ${socket.id} disconnected`);
 
       // Find the room where the user was.
@@ -157,3 +181,8 @@ const socketHandler = (io) => {
 };
 
 export default socketHandler;
+
+//Todo:
+//Fix time (Fixed)
+//fix first player turn (Fixed)
+//add sounds

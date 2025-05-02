@@ -11,3 +11,7 @@ export const winCombs = [
   [0, 4, 8],
   [2, 4, 6],
 ];
+
+// Audios
+export const playAudio = "/public/audio/mixkit-arrow-whoosh-1491.mp3";
+export const messageAudio = "/audio/mixkit-message-pop-alert-2354.mp3";
