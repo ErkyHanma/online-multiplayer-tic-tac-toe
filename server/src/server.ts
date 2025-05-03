@@ -9,6 +9,10 @@ const app = express();
 app.use(cors());
 app.use(morgan("dev"));
 
+app.get("/", (req, res) => {
+  res.send("Server is up and running!");
+});
+
 const server = createServer(app);
 const port = process.env.PORT ?? 3000;
 const io = new Server(server, {
