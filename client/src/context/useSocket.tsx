@@ -12,7 +12,9 @@ type SocketContextType = {
   isConnected: boolean;
 };
 
-const URL = "https://online-multiplayer-tic-tac-toe.onrender.com";
+const URL = import.meta.env.PROD
+  ? "https://online-multiplayer-tic-tac-toe.onrender.com"
+  : "http://localhost:3000";
 
 const SocketContext = createContext<SocketContextType>({
   socket: null,
@@ -31,11 +33,17 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     const socketInstance = new (ClientIO as any)(URL);
 
     socketInstance.on("connect", () => {
+      console.log("✅ Connected to server");
       setIsConnected(true);
     });
 
     socketInstance.on("disconnect", () => {
+      console.log("🔌 Disconnected from server");
       setIsConnected(false);
+    });
+
+    socketInstance.on("connect_error", (err: any) => {
+      console.error("❌ Connection error:", err.message);
     });
 
     setSocket(socketInstance);

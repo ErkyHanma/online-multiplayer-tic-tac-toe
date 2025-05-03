@@ -6,7 +6,18 @@ import cors from "cors";
 import { socketHandler } from "./socketHandlers.js";
 
 const app = express();
-app.use(cors());
+
+const allowedOrigins = [
+  "http://localhost:5173", // Dev client
+  "https://online-multiplayer-tic-tac-toe.vercel.app", // Prod client
+];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+  })
+);
+
 app.use(morgan("dev"));
 
 app.get("/", (req, res) => {
@@ -18,7 +29,7 @@ const port = process.env.PORT ?? 3000;
 
 const io = new Server(server, {
   cors: {
-    origin: "https://online-multiplayer-tic-tac-toe.vercel.app",
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
   },
   connectionStateRecovery: {},
