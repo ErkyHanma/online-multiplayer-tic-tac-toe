@@ -18,7 +18,8 @@ const port = process.env.PORT ?? 3000;
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL ?? "*",
+    origin: "https://online-multiplayer-tic-tac-toe.vercel.app",
+    methods: ["GET", "POST"],
   },
   connectionStateRecovery: {},
 });

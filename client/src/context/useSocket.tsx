@@ -12,7 +12,7 @@ type SocketContextType = {
   isConnected: boolean;
 };
 
-const URL = import.meta.env.VITE_SOCKET_URL ?? "http://localhost:3000";
+const URL = "https://online-multiplayer-tic-tac-toe.onrender.com";
 
 const SocketContext = createContext<SocketContextType>({
   socket: null,
