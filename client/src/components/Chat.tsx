@@ -112,7 +112,7 @@ const Chat = ({ roomCode, playerData }: ChatProps) => {
           value={message}
         />
         <button className="flex cursor-pointer items-center justify-center rounded-lg bg-zinc-700 p-2 opacity-90 hover:bg-zinc-600 focus:border-none">
-          <img src="/public/sent-stroke-rounded.svg" alt="" />
+          <img src="/sent-stroke-rounded.svg" alt="" />
         </button>
       </div>
     </form>
