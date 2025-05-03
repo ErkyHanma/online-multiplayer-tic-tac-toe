@@ -15,9 +15,10 @@ app.get("/", (req, res) => {
 
 const server = createServer(app);
 const port = process.env.PORT ?? 3000;
+
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: process.env.CLIENT_URL ?? "*",
   },
   connectionStateRecovery: {},
 });

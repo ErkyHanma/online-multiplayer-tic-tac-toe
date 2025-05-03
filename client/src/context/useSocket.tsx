@@ -12,8 +12,7 @@ type SocketContextType = {
   isConnected: boolean;
 };
 
-const URL =
-  process.env.NODE_ENV === "production" ? undefined : "http://localhost:3000";
+const URL = import.meta.env.VITE_SOCKET_URL ?? "http://localhost:3000";
 
 const SocketContext = createContext<SocketContextType>({
   socket: null,
