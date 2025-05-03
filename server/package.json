@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch --loader ts-node/esm src/server.ts",
-    "start": "ts-node src/server.ts"
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",

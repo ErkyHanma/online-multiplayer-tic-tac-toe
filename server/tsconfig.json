@@ -12,11 +12,10 @@
     "resolveJsonModule": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "noEmit": true,
     "types": ["node"],
-    "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
-    "incremental": true
+    "incremental": true,
+    "lib": ["ES2022"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
