@@ -1,6 +1,6 @@
 import type { Socket, Server } from "socket.io";
-import determineWinner from "./utils/index.ts";
-import { SocketEvents, type Board, type Rooms } from "./utils/types.ts";
+import determineWinner from "./utils/index.js";
+import { SocketEvents, type Board, type Rooms } from "./utils/types.js";
 
 const rooms: Rooms = {};
 
